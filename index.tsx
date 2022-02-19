@@ -1,6 +1,11 @@
-import React, { Component } from 'react';
+import React, {
+  Component,
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
 import { render } from 'react-dom';
-import Hello from './Hello';
 import './style.css';
 
 interface AppProps {}
@@ -8,22 +13,32 @@ interface AppState {
   name: string;
 }
 
-class App extends Component<AppProps, AppState> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: 'React',
-    };
-  }
+function TestUseref() {
+  const valueRef = useRef(false);
+  const [show, setShow] = useState(false);
 
-  render() {
-    return (
-      <div>
-        <Hello name={this.state.name} />
-        <p>Start editing to see some magic happen :)</p>
-      </div>
-    );
-  }
+  const value = valueRef.current;
+
+  useEffect(() => {
+    if (value) setShow(true);
+  }, [value]);
+
+  const click = useCallback(() => (valueRef.current = true), []);
+
+  return (
+    <>
+      {show && <div>ref change triggered an effect</div>}
+      <button onClick={click}>Click me</button>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <>
+      <TestUseref />
+    </>
+  );
 }
 
 render(<App />, document.getElementById('root'));
